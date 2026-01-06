@@ -60,7 +60,16 @@ button:hover {
 
 </head>
 
-<body>
+<body><div id="loginBox">
+  <h2>🔐 登录</h2>
+  <p>用户名：</p>
+  <input id="username" placeholder="你的名字"><br><br>
+  <p>密码：</p>
+  <input id="password" type="password"><br><br>
+  <button onclick="login()">登录</button>
+</div>
+
+<div id="siteBox" style="display:none;">
 
 <h1>📖 故事网站</h1>
 
@@ -74,6 +83,31 @@ button:hover {
 <div id="storyList"></div>
 
 <script>
+function login() {
+  var name = document.getElementById("username").value;
+  var pass = document.getElementById("password").value;
+
+  if (name === "" || pass === "") {
+    alert("要输入名字和密码哦！");
+    return;
+  }
+
+  localStorage.setItem("user", name);
+  document.getElementById("loginBox").style.display = "none";
+  document.getElementById("siteBox").style.display = "block";
+}
+
+function checkLogin() {
+  var user = localStorage.getItem("user");
+  if (user) {
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("siteBox").style.display = "block";
+  }
+}
+
+checkLogin();
+
+// ====== 故事功能 ======
 function addStory() {
   var text = document.getElementById("storyInput").value;
   if (text === "") {
@@ -91,17 +125,13 @@ function addStory() {
   editBtn.innerText = "✏️ 修改";
   editBtn.onclick = function () {
     var newText = prompt("修改你的故事：", content.innerText);
-    if (newText !== null && newText !== "") {
-      content.innerText = newText;
-    }
+    if (newText) content.innerText = newText;
   };
 
   var delBtn = document.createElement("button");
   delBtn.innerText = "🗑️ 删除";
   delBtn.onclick = function () {
-    if (confirm("真的要删除这个故事吗？")) {
-      div.remove();
-    }
+    if (confirm("真的要删除吗？")) div.remove();
   };
 
   div.appendChild(content);
@@ -115,5 +145,6 @@ function addStory() {
 </script>
 
 
-</body>
+
+</body></div>
 </html>
