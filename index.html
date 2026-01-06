@@ -2,11 +2,55 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>郑故事</title>
+<title>郑故事>zheng'g
+<style>
+body {
+  font-family: sans-serif;
+  background: #f5f5f5;
+  padding: 20px;
+}
+textarea {
+  width: 100%;
+  height: 100px;
+}
+.story {
+  background: white;
+  padding: 10px;
+  margin-top: 10px;
+}
+</style>
 </head>
+
 <body>
-<h1>欢迎来到郑故事</h1>
-<p>这是郑公司旗下的网站。</p>
-<p>用于分享故事的一个网站</p>
+
+<h1>📖 郑故事</h1>
+
+<p>请在下面写下你的故事：</p>
+
+<textarea id="storyInput" placeholder="从前从前……"></textarea><br><br>
+
+<button onclick="addStory()">发布故事</button>
+
+<h2>🧾 故事列表</h2>
+<div id="storyList"></div>
+
+<script>
+function addStory() {
+  var text = document.getElementById("storyInput").value;
+  if (text === "") {
+    alert("请写故事！");
+    return;
+  }
+
+  var div = document.createElement("div");
+  div.className = "story";
+  div.innerText = text;
+
+  document.getElementById("storyList").prepend(div);
+  document.getElementById("storyInput").value = "";
+}
+</script>
+
 </body>
 </html>
+
