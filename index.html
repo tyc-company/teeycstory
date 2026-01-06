@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>郑故事>zheng'g
+<title>故事网站</title>
 <style>
 body {
   font-family: sans-serif;
@@ -23,9 +23,9 @@ textarea {
 
 <body>
 
-<h1>📖 郑故事</h1>
+<h1>📖 故事网站</h1>
 
-<p>请在下面写下你的故事：</p>
+<p>在下面写下你的故事：</p>
 
 <textarea id="storyInput" placeholder="从前从前……"></textarea><br><br>
 
@@ -38,7 +38,7 @@ textarea {
 function addStory() {
   var text = document.getElementById("storyInput").value;
   if (text === "") {
-    alert("请先写故事");
+    alert("要先写故事哦！");
     return;
   }
 
@@ -51,7 +51,7 @@ function addStory() {
   var editBtn = document.createElement("button");
   editBtn.innerText = "✏️ 修改";
   editBtn.onclick = function () {
-    var newText = prompt("请修改你的故事：", content.innerText);
+    var newText = prompt("修改你的故事：", content.innerText);
     if (newText !== null && newText !== "") {
       content.innerText = newText;
     }
@@ -75,6 +75,6 @@ function addStory() {
 }
 </script>
 
+
 </body>
 </html>
-
