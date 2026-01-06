@@ -38,13 +38,37 @@ textarea {
 function addStory() {
   var text = document.getElementById("storyInput").value;
   if (text === "") {
-    alert("请写故事！");
+    alert("请先写故事");
     return;
   }
 
   var div = document.createElement("div");
   div.className = "story";
-  div.innerText = text;
+
+  var content = document.createElement("div");
+  content.innerText = text;
+
+  var editBtn = document.createElement("button");
+  editBtn.innerText = "✏️ 修改";
+  editBtn.onclick = function () {
+    var newText = prompt("请修改你的故事：", content.innerText);
+    if (newText !== null && newText !== "") {
+      content.innerText = newText;
+    }
+  };
+
+  var delBtn = document.createElement("button");
+  delBtn.innerText = "🗑️ 删除";
+  delBtn.onclick = function () {
+    if (confirm("真的要删除这个故事吗？")) {
+      div.remove();
+    }
+  };
+
+  div.appendChild(content);
+  div.appendChild(document.createElement("br"));
+  div.appendChild(editBtn);
+  div.appendChild(delBtn);
 
   document.getElementById("storyList").prepend(div);
   document.getElementById("storyInput").value = "";
