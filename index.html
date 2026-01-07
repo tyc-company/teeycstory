@@ -57,7 +57,8 @@ button:hover {
   background: #f44336;
 }
 </style>
-
+  
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body><div id="loginBox">
@@ -83,66 +84,87 @@ button:hover {
 <div id="storyList"></div>
 
 <script>
-function login() {
-  var name = document.getElementById("username").value;
-  var pass = document.getElementById("password").value;
+const supabaseUrl = https://fyykdxogvqrusllwgtth.supabase.co
+const supabaseKey = sb_publishable_7otnfU5jy4Nus66IyPRj0g_-vImZ0uX
 
-  if (name === "" || pass === "") {
-    alert("请输入名字和密码！");
-    return;
-  }
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-  localStorage.setItem("user", name);
-  document.getElementById("loginBox").style.display = "none";
-  document.getElementById("siteBox").style.display = "block";
-}
+// ===== 登录 =====
+async function login() {
+  const email = document.getElementById("username").value + "@story.com";
+  const password = document.getElementById("password").value;
 
-function checkLogin() {
-  var user = localStorage.getItem("user");
-  if (user) {
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    alert("登录失败，可能还没注册");
+  } else {
     document.getElementById("loginBox").style.display = "none";
     document.getElementById("siteBox").style.display = "block";
+    loadStories();
   }
 }
 
-checkLogin();
+// ===== 注册 =====
+async function register() {
+  const email = document.getElementById("username").value + "@story.com";
+  const password = document.getElementById("password").value;
 
-// ====== 故事功能 ======
-function addStory() {
-  var text = document.getElementById("storyInput").value;
+  const { error } = await supabase.auth.signUp({
+    email,
+    password
+  });
+
+  if (error) {
+    alert(error.message);
+  } else {
+    alert("注册成功！现在可以登录了");
+  }
+}
+
+// ===== 加载故事 =====
+async function loadStories() {
+  const { data } = await supabase
+    .from("stories")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  const list = document.getElementById("storyList");
+  list.innerHTML = "";
+
+  data.forEach(story => {
+    const div = document.createElement("div");
+    div.className = "story";
+    div.innerText = story.content;
+    list.appendChild(div);
+  });
+}
+
+// ===== 发布故事 =====
+async function addStory() {
+  const text = document.getElementById("storyInput").value;
   if (text === "") {
     alert("要先写故事哦！");
     return;
   }
 
-  var div = document.createElement("div");
-  div.className = "story";
+  const user = await supabase.auth.getUser();
+  const name = user.data.user.email.split("@")[0];
 
-  var content = document.createElement("div");
-  content.innerText = text;
+  await supabase.from("stories").insert({
+    author: name,
+    content: text,
+    hidden: false
+  });
 
-  var editBtn = document.createElement("button");
-  editBtn.innerText = "✏️ 修改";
-  editBtn.onclick = function () {
-    var newText = prompt("修改你的故事：", content.innerText);
-    if (newText) content.innerText = newText;
-  };
-
-  var delBtn = document.createElement("button");
-  delBtn.innerText = "🗑️ 删除";
-  delBtn.onclick = function () {
-    if (confirm("真的要删除吗？")) div.remove();
-  };
-
-  div.appendChild(content);
-  div.appendChild(document.createElement("br"));
-  div.appendChild(editBtn);
-  div.appendChild(delBtn);
-
-  document.getElementById("storyList").prepend(div);
   document.getElementById("storyInput").value = "";
+  loadStories();
 }
 </script>
+
 
 
 
