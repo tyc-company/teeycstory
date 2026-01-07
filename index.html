@@ -68,6 +68,8 @@ button:hover {
   <p>密码：</p>
   <input id="password" type="password"><br><br>
   <button onclick="login()">登录</button>
+  <button onclick="register()">注册</button>
+  
 </div>
 
 <div id="siteBox" style="display:none;">
@@ -84,8 +86,8 @@ button:hover {
 <div id="storyList"></div>
 
 <script>
-const supabaseUrl = https://fyykdxogvqrusllwgtth.supabase.co
-const supabaseKey = sb_publishable_7otnfU5jy4Nus66IyPRj0g_-vImZ0uX
+const supabaseUrl = "https://fyykdxogvqrusllwgtth.supabase.co";
+const supabaseKey = "sb_publishable_7otnfU5jy4Nus66IyPRj0g_-vImZ0uX";
 
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
@@ -168,5 +170,5 @@ async function addStory() {
 
 
 
-</body></div>
+</body>
 </html>
