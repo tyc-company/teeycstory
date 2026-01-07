@@ -89,7 +89,7 @@ button:hover {
 const supabaseUrl = "https://fyykdxogvqrusllwgtth.supabase.co";
 const supabaseKey = "sb_publishable_7otnfU5jy4Nus66IyPRj0g_-vImZ0uX";
 
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+const sb = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 // ===== 登录 =====
 async function login() {
@@ -115,7 +115,7 @@ async function register() {
   const email = document.getElementById("username").value + "@story.com";
   const password = document.getElementById("password").value;
 
-  const { error } = await supabase.auth.signUp({
+  const { error } = await sb.auth.signUp({
     email,
     password
   });
@@ -129,7 +129,7 @@ async function register() {
 
 // ===== 加载故事 =====
 async function loadStories() {
-  const { data } = await supabase
+  const { data } = await sb
     .from("stories")
     .select("*")
     .order("created_at", { ascending: false });
@@ -153,10 +153,10 @@ async function addStory() {
     return;
   }
 
-  const user = await supabase.auth.getUser();
+  const user = await sb.auth.getUser();
   const name = user.data.user.email.split("@")[0];
 
-  await supabase.from("stories").insert({
+  await sb.from("stories").insert({
     author: name,
     content: text,
     hidden: false
