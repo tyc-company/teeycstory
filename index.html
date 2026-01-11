@@ -129,7 +129,7 @@ async function register() {
 
 // ===== 加载故事 =====
 async function loadStories() {
-  const { data } = await sb
+  const { data: stories } = await sb
     .from("stories")
     .select("*")
     .order("created_at", { ascending: false });
@@ -137,12 +137,48 @@ async function loadStories() {
   const list = document.getElementById("storyList");
   list.innerHTML = "";
 
-  data.forEach(story => {
+  for (const story of stories) {
     const div = document.createElement("div");
     div.className = "story";
-    div.innerText = story.content;
+
+    // 故事内容
+    const content = document.createElement("p");
+    content.innerText = "📖 " + story.content;
+    div.appendChild(content);
+
+    // 评论列表
+    const commentsBox = document.createElement("div");
+    commentsBox.style.marginTop = "10px";
+
+    const { data: comments } = await sb
+      .from("comments")
+      .select("*")
+      .eq("story_id", story.id)
+      .order("created_at");
+
+    comments.forEach(c => {
+      const p = document.createElement("p");
+      p.innerText = "💬 " + c.author + "：" + c.content;
+      p.style.fontSize = "14px";
+      commentsBox.appendChild(p);
+    });
+
+    div.appendChild(commentsBox);
+
+    // 评论输入框
+    const input = document.createElement("input");
+    input.placeholder = "写评论…";
+    input.style.width = "80%";
+
+    const btn = document.createElement("button");
+    btn.innerText = "发表评论";
+    btn.onclick = () => addComment(story.id, input.value);
+
+    div.appendChild(input);
+    div.appendChild(btn);
+
     list.appendChild(div);
-  });
+  }
 }
 
 // ===== 发布故事 =====
@@ -165,6 +201,23 @@ async function addStory() {
   document.getElementById("storyInput").value = "";
   loadStories();
 }
+  async function addComment(storyId, text) {
+  if (text === "") {
+    alert("评论不能为空");
+    return;
+  }
+  const user = await sb.auth.getUser();
+  const name = user.data.user.email.split("@")[0];
+
+  await sb.from("comments").insert({
+    story_id: storyId,
+    author: name,
+    content: text
+  });
+
+  loadStories();
+}
+
 </script>
 
 
